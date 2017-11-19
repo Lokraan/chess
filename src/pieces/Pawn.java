@@ -2,11 +2,10 @@ package pieces;
 
 import board.Board;
 import enums.Colors;
-import idk.Move;
-import idk.Position;
+import idk.*;
 
 public class Pawn extends Piece {
-	public boolean epAble; // able to en passanted
+	private boolean epAble; // able to en passanted
 	
 	/**
 	 *
@@ -31,7 +30,6 @@ public class Pawn extends Piece {
 		int row = pos.getRow();
 		int col = pos.getCol();
 		
-		epAble = false;
 		Position p = new Position(row+1, col);
 		if(canMove(p)) {
 			addMove(p);
@@ -57,7 +55,6 @@ public class Pawn extends Piece {
 		int row = pos.getRow();
 		int col = pos.getCol();
 		
-		epAble = false;
 		Position p = new Position(row-1, col);
 		if(canMove(p)) {
 			addMove(p);
@@ -110,14 +107,18 @@ public class Pawn extends Piece {
 	
 	private boolean canEnPassant(Position p) {
 		if(board.inRange(p) && board.isEnemy(this, p)) {
-			if(board.getPiece(p) instanceof Pawn) 
-				return ((Pawn) board.getPiece(p)).epAble;
+			if(board.getPiece(p) instanceof Pawn)
+				return ((Pawn) board.getPiece(p)).isEpAble();
 		}
 		return false;
 	}
 	
 	public boolean isEpAble() {
 		return epAble;
+	}
+	
+	public void isEpAble(boolean l) {
+		epAble = l;
 	}
 	
 	public boolean getHasMoved() {

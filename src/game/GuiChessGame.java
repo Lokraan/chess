@@ -14,9 +14,7 @@ public class GuiChessGame extends ChessGame {
 	
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		
 		GuiChessGame game = new GuiChessGame();
-		
 	}
 	
 }

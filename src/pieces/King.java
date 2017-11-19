@@ -24,7 +24,6 @@ public class King extends Piece {
 	 *   dab squad yeet
 	 */
 	public void dab() {
-		
 		Piece[][] pieces = board.getPieces();
 		int row = pos.getRow();
 		int col = pos.getCol();

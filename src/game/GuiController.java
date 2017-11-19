@@ -10,6 +10,7 @@ import gui.BoardPanel;
 import gui.NavPanel;
 import idk.Move;
 import idk.Position;
+import pieces.Pawn;
 import pieces.Piece;
 
 public class GuiController {
@@ -80,7 +81,7 @@ public class GuiController {
 	 */
 	public ArrayList<Move> getMoves(Piece p) {
 		ArrayList<Move> moves = game.getBoard().getLegalMoves(p);
-		System.out.println(p.toChar() + " " + moves);
+//		System.out.println(p.toChar() + " " + moves);
 		return moves;
 	}
 	

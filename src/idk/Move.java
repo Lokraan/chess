@@ -42,10 +42,8 @@ public class Move {
 	public Move(Position start, Position end, Piece movingPiece, Piece deadPiece) {
 		this(start, end, movingPiece);
 		this.dPiece = deadPiece;
-		
+		this.enPassant = true;
 	}
-
-	
 	
 	public Position getStart() {
 		return this.start;

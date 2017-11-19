@@ -37,12 +37,12 @@ public class Board {
 		if(pieces[r1][c1] != null) pieces[r1][c1].hasMoved = true;
 		if(pieces[r2][c2] != null) pieces[r2][c2].hasMoved = true;
 		
-		if(!move.castling || !move.enPassant) {
+		if(!move.castling && !move.enPassant) {
 			Piece p = pieces[r1][c1];
 			pieces[r2][c2] = p;
 			pieces[r1][c1].setPosition(null);
 			pieces[r1][c1] = null;
-			p.setPosition(new Position(r2, c2));
+			pieces[r2][c2].setPosition(new Position(r2, c2));
 		}
 		else if(move.castling) {
 			Piece king = pieces[r1][c1];
@@ -65,20 +65,22 @@ public class Board {
 			}
 		}
 		if(move.getMovingPiece() instanceof Pawn) {
-			System.out.println("pawn");
-			((Pawn) pieces[r2][c2]).epAble = false;
 			if(move.enPassant) {
+
+				// move enpassanting piece
 				Piece p = pieces[r1][c1];
+				pieces[r1][c1] = null;
 				pieces[r2][c2] = p;
 				p.setPosition(new Position(r2, c2));
+				
+				// set dead piece to null
 				Position dpp = move.dPiece.getPosition();
 				pieces[dpp.getRow()][dpp.getCol()] = null;
-				move.dPiece.setPosition(null);
 			}
 			
 			// set epable
 			if(Math.abs(r2 - r1) == 2) {
-				((Pawn) pieces[r2][c2]).epAble = true;
+				((Pawn) pieces[r2][c2]).isEpAble(true);
 			}
 			
 			// pawn promotion
@@ -187,6 +189,7 @@ public class Board {
 	 */
 	public boolean inCheck(Colors color) {
 		Position pos = getKing(color).getPosition();
+		King k = (King) pieces[pos.getRow()][pos.getCol()];
 		ArrayList<Piece> pieceList = getPieceList(flipColor(color));
 		
 		// check all enemy pieces' moves, if one of them equals king pos in check
@@ -194,7 +197,8 @@ public class Board {
 			for(Move m : p.getPossibleMoves()) {
 				if(m.getEnd() != null) {
 					int r = m.getEnd().getRow(), c = m.getEnd().getCol();
-					if(pieces[r][c] == pieces[pos.getRow()][pos.getCol()]) {
+					Piece targetP = pieces[r][c];
+					if(targetP instanceof King && targetP == k) {
 						return true;
 					}
 				}

@@ -71,10 +71,13 @@ public class BoardPanel extends JPanel {
 				// check reselection and selecting of same team
 				if(p2 != null) {
 					if(p == p2) {
-						System.out.println("unselecting square");
 						unselectSquare();
 						return;
-					} else if(p != null && p.getColor() == p2.getColor()) return;
+					} else if(p != null && p.getColor() == p2.getColor()) {
+						unselectSquare();
+						selectSquare(squares[Math.abs(row-7)][col]);
+						return;
+					}
 				}
 				
 				// do the dab
@@ -84,7 +87,6 @@ public class BoardPanel extends JPanel {
 					Position des = new Position(row, col);
 					controller.move(start, des);
 					unselectSquare();
-					// System.out.println(start + " " + des);
 				}
 				
 			}
@@ -147,7 +149,6 @@ public class BoardPanel extends JPanel {
 		square.isHighlighted(selectColor);
 		selectedSquare = square;
 		Piece p = square.getPiece();
-		System.out.println("Selecting: " + p.toChar());
 		for(Move m : controller.getMoves(p)) {
 			Square sq = squares[Math.abs(m.getEnd().getRow()-7)][m.getEnd().getCol()];
 			movableSquares.add(sq);

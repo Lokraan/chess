@@ -37,13 +37,21 @@ public abstract class BoardBuilder {
 		return newBoard;
 	}
 	
+	private static Piece clonePieceAttr(Piece origP, Piece newP) {
+		if(origP.hasMoved) newP.hasMoved = true;
+		if(origP instanceof Pawn && ((Pawn) origP).isEpAble()) {
+			((Pawn) newP).isEpAble(true);
+		}
+		return newP;
+	}
+	
 	private static Piece clonePiece(Board b, Piece p) {
-		if(p instanceof Pawn) return new Pawn(b, p.getPosition(), p.getColor());
-		else if(p instanceof Rook)  return new Rook(b, p.getPosition(), p.getColor());
-		else if(p instanceof Knight)  return new Knight(b, p.getPosition(), p.getColor());
-		else if(p instanceof Bishop)  return new Bishop(b, p.getPosition(), p.getColor());
-		else if(p instanceof King)  return new King(b, p.getPosition(), p.getColor());
-		else if(p instanceof Queen)  return new Queen(b, p.getPosition(), p.getColor());
+		if(p instanceof Pawn) return clonePieceAttr(p, new Pawn(b, p.getPosition(), p.getColor()));
+		else if(p instanceof Rook)  return clonePieceAttr(p, new Rook(b, p.getPosition(), p.getColor()));
+		else if(p instanceof Knight)  return clonePieceAttr(p, new Knight(b, p.getPosition(), p.getColor()));
+		else if(p instanceof Bishop)  return clonePieceAttr(p, new Bishop(b, p.getPosition(), p.getColor()));
+		else if(p instanceof King)  return clonePieceAttr(p, new King(b, p.getPosition(), p.getColor()));
+		else if(p instanceof Queen)  return clonePieceAttr(p, new Queen(b, p.getPosition(), p.getColor()));
 		else return null;
 	}
 	
