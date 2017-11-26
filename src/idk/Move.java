@@ -11,9 +11,12 @@ public class Move {
 	public Piece dPiece;
 	public boolean castling;
 	public boolean enPassant;
+	public Position rStart;
+	public Position rEnd;
+	
 	
 	/**
-	 * everything except castling
+	 * Default move
 	 * @param start
 	 * @param end
 	 * @param movingPiece
@@ -29,9 +32,11 @@ public class Move {
 	 * @param from
 	 * @param dest
 	 */
-	public Move(Position start, Position end) {
-		this.start = start;
-		this.end = end;
+	public Move(Position kStart, Position kEnd, Position rStart, Position rEnd) {
+		this.start = kStart;
+		this.end = kEnd;
+		this.rStart = rStart;
+		this.rEnd = rEnd;
 		this.castling = true;
 	}
 	

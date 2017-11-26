@@ -10,8 +10,7 @@ import gui.BoardPanel;
 import gui.NavPanel;
 import idk.Move;
 import idk.Position;
-import pieces.Pawn;
-import pieces.Piece;
+import pieces.*;
 
 public class GuiController {
 
@@ -62,6 +61,9 @@ public class GuiController {
 		for(Move m : getMoves(b.getPieces()[start.getRow()][start.getCol()])) {
 			if(m.getEnd().equals(des)) {
 				b.updateBoard(m);
+				if(m.castling) {
+					System.out.println("castling: " + cPlayer);
+				}
 				cPlayer = game.flipFlopColor(cPlayer);
 				// add marker on king to indicate in check
 				if(game.getBoard().inCheck(cPlayer)) {

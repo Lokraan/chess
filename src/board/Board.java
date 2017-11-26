@@ -35,34 +35,38 @@ public class Board {
 		int c2 = end.getCol();
 		
 		if(pieces[r1][c1] != null) pieces[r1][c1].hasMoved = true;
-		if(pieces[r2][c2] != null) pieces[r2][c2].hasMoved = true;
 		
 		if(!move.castling && !move.enPassant) {
 			Piece p = pieces[r1][c1];
+			if(p == null) return;
 			pieces[r2][c2] = p;
-			pieces[r1][c1].setPosition(null);
 			pieces[r1][c1] = null;
-			pieces[r2][c2].setPosition(new Position(r2, c2));
+			pieces[r2][c2].setPosition(end);
 		}
 		else if(move.castling) {
+			
+			Position rStart = move.rStart;
+			Position rEnd = move.rEnd;
+			int x1 = rStart.getRow();
+			int y1 = rStart.getCol();
+			int x2 = rEnd.getRow();
+			int y2 = rEnd.getCol();
+			
 			Piece king = pieces[r1][c1];
-			Piece rook = pieces[r2][c2];
+			Piece rook = pieces[x1][y1];
+			
+			if(king == null || rook == null) return;
+			
+			pieces[r2][c2] = king;
 			pieces[r1][c1] = null;
-			pieces[r2][c2] = null;
-			// queen side castle
-			if(c1 > c2) {
-				pieces[r1][c1-2] = king;
-				pieces[r2][c1-1] = rook;
-				rook.setPosition(new Position(r2, c1-1));
-				setKing(king, new Position(r1, c1-2));
-			}
-			// king side castle
-			else if(c2 > c1) {
-				pieces[r1][c1+2] = king;
-				pieces[r2][c1+1] = rook;
-				rook.setPosition(new Position(r2, c1+2));
-				setKing(king, new Position(r1, c1+1));
-			}
+			
+			pieces[x2][y2] = rook;
+			pieces[x1][y1] = null;
+			
+			rook.setPosition(rEnd);
+			king.setPosition(end);
+			rook.hasMoved = true;
+			king.hasMoved = true;
 		}
 		if(move.getMovingPiece() instanceof Pawn) {
 			if(move.enPassant) {
@@ -71,7 +75,7 @@ public class Board {
 				Piece p = pieces[r1][c1];
 				pieces[r1][c1] = null;
 				pieces[r2][c2] = p;
-				p.setPosition(new Position(r2, c2));
+				pieces[r2][c2].setPosition(end);
 				
 				// set dead piece to null
 				Position dpp = move.dPiece.getPosition();
@@ -170,10 +174,19 @@ public class Board {
 		return pieceList;
 	}
 	
+	/**
+	 * Sets board pieces to pieces put in
+	 * @param pieces
+	 */
 	public void setBoard(Piece[][] pieces) {
 		this.pieces = pieces;
 	}
 	
+	/**
+	 * Sets king's position to pos
+	 * @param king
+	 * @param p
+	 */
 	public void setKing(Piece king, Position p) {
 		king.setPosition(p);
 		switch(king.getColor()) {
@@ -207,6 +220,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns opposite player's color
+	 * @param c
+	 * @return
+	 */
 	public Colors flipColor(Colors c) {
 		switch(c) {
 			case Black: return Colors.White;
@@ -253,6 +271,21 @@ public class Board {
 	}
 	
 	/**
+	 * Checks to see if position is in the line of fire from opposite piece's moves.
+	 * @param color
+	 * @param pos
+	 * @return
+	 */
+	public boolean isUnderFire(Colors color, Position pos) {
+		for(Piece p : getPieceList(flipColor(color))) {
+			for(Move m : p.getPossibleMoves()) {
+				if(m.getEnd().equals(pos)) return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Get piece at current pos
 	 * @param pos
 	 * @return
@@ -263,6 +296,10 @@ public class Board {
 		return pieces[row][col];
 	}
 	
+	/**
+	 * gets pieces in play on board
+	 * @return
+	 */
 	public Piece[][] getPieces() {
 		return pieces;
 	}
@@ -288,6 +325,12 @@ public class Board {
 		ArrayList<Move> moves = new ArrayList<Move>();
 		if(piece == null) return moves;
 		ArrayList<Move> possibleMoves = piece.getPossibleMoves();
+		if(piece instanceof King) {
+			System.out.println("king moves: " + possibleMoves);
+			ArrayList<Move> castleMoves = ((King) piece).getCastlingMoves();
+			System.out.println("king moves2: " + possibleMoves);
+			possibleMoves.addAll(castleMoves);
+		}
 		for(Move m : possibleMoves) {
 			if(!putsPlayerInCheck(piece.getColor(), m)) {
 				moves.add(m);
