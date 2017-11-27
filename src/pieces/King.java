@@ -60,6 +60,32 @@ public class King extends Piece {
 		Position p;
 		if(hasMoved) return;
 		// starting at start king pos to right end, if any aren't clear get out of there
+		for(int j = 4; j < 7; ++j) {
+			p = new Position(pos.getRow(), j);
+			if(!board.isClear(p) || board.isUnderFire(color, p)) return;
+		}
+		
+		p = new Position(pos.getRow(), 7);
+		
+		// check to make sure piece at row 7 is a rook that hasn't moved
+		Piece piece = board.getPiece(p);
+		if(piece == null || !(piece instanceof Rook) || ((Rook) piece).hasMoved) return;
+		
+		// if hasn't moved, add castling move yeet
+		Position rookStart = p;
+		Position rookEnd = new Position(pos.getRow(), 4);
+		Position kingEnd = new Position(pos.getRow(), pos.getCol() + 2);
+		moves.add( new Move(pos, kingEnd, rookStart, rookEnd) );
+	}
+	
+	/**
+	 * Get castling moves for queen side
+	 */
+	private void castleQueenSide() {
+		
+		Position p;
+		if(hasMoved) return;
+		// starting at start king pos to right end, if any aren't clear get out of there
 		for(int j = 2; j > 0; --j) {
 			p = new Position(pos.getRow(), j);
 			if(!board.isClear(p) || board.isUnderFire(color, p)) return;
@@ -75,31 +101,6 @@ public class King extends Piece {
 		Position rookStart = p;
 		Position rookEnd = new Position(pos.getRow(), 3);
 		Position kingEnd = new Position(pos.getRow(), pos.getCol() - 2);
-		moves.add( new Move(pos, kingEnd, rookStart, rookEnd) );
-	}
-	
-	/**
-	 * Get castling moves for queen side
-	 */
-	private void castleQueenSide() {
-		Position p;
-		if(hasMoved) return;
-		// starting at start king pos to right end, if any aren't clear get out of there
-		for(int j = 4; j < 7; ++j) {
-			p = new Position(pos.getRow(), j);
-			if(!board.isClear(p) || board.isUnderFire(color, p)) return;
-		}
-		
-		p = new Position(pos.getRow(), 7);
-		
-		// check to make sure piece at row 7 is a rook that hasn't moved
-		Piece piece = board.getPiece(p);
-		if(piece == null || !(piece instanceof Rook) || ((Rook) piece).hasMoved) return;
-		
-		// if hasn't moved, add castling move yeet
-		Position rookStart = p;
-		Position rookEnd = new Position(pos.getRow(), 5);
-		Position kingEnd = new Position(pos.getRow(), pos.getCol() + 2);
 		moves.add( new Move(pos, kingEnd, rookStart, rookEnd) );
 		
 	}

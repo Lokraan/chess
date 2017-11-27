@@ -47,6 +47,9 @@ public class Board {
 			
 			Position rStart = move.rStart;
 			Position rEnd = move.rEnd;
+			
+			System.out.println(start + " " + end + " | " + rStart + " " + rEnd);
+			
 			int x1 = rStart.getRow();
 			int y1 = rStart.getCol();
 			int x2 = rEnd.getRow();
