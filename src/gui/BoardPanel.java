@@ -18,8 +18,8 @@ import pieces.Piece;
 public class BoardPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private Color white = Color.WHITE;
-	private Color black = Color.BLACK;
+	private Color white = new Color(240, 217, 180);
+	private Color black = new Color(181, 136, 99);
 	private Color selectColor = Color.GREEN;
 	private Color enemySelectColor = Color.RED;
 	
