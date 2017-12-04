@@ -17,6 +17,7 @@ public class GuiController {
 	private BoardFrame bFrame;
 	private BoardPanel bPanel;
 	
+	private AI ai;
 	private GuiChessGame game;
 	private Colors cPlayer = Colors.White;
 	
@@ -25,6 +26,7 @@ public class GuiController {
 	 * @param game
 	 */
 	public GuiController(GuiChessGame game) {
+		this.ai = new AI(Colors.Black);
 		this.game = game;
 	}
 	
@@ -62,18 +64,33 @@ public class GuiController {
 			if(m.getEnd().equals(des)) {
 				b.updateBoard(m);
 				if(m.castling) {
-					System.out.println("castling: " + cPlayer);
 				}
 				cPlayer = game.flipFlopColor(cPlayer);
 				// add marker on king to indicate in check
 				if(game.getBoard().inCheck(cPlayer)) {
-					System.out.println("in check");
 					Piece k = game.getBoard().getKing(game.flipFlopColor(cPlayer));
 					bPanel.getSquares()[k.getPosition().getRow()][k.getPosition().getCol()].isHighlighted(Color.RED);
 				}
 				bPanel.updateUI();
 			}
 		}
+		
+		if(b.isCheckmate()) {
+			System.out.println("CHECKMATE!");
+		} else if (b.isStalemate()) {
+			System.out.println("STALEMATE!");
+		}
+		
+		b.updateBoard(ai.getMove(b));
+		cPlayer = game.flipFlopColor(cPlayer);
+		
+		if(b.isCheckmate()) {
+			System.out.println("CHECKMATE!");
+		} else if (b.isStalemate()) {
+			System.out.println("STALEMATE!");
+		}
+		
+		
 	}
 	
 	/**
@@ -83,7 +100,6 @@ public class GuiController {
 	 */
 	public ArrayList<Move> getMoves(Piece p) {
 		ArrayList<Move> moves = game.getBoard().getLegalMoves(p);
-//		System.out.println(p.toChar() + " " + moves);
 		return moves;
 	}
 	

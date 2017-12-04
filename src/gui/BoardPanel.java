@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import board.Board;
 import game.GuiController;
 import idk.Move;
 import idk.Position;
@@ -51,6 +52,10 @@ public class BoardPanel extends JPanel {
 			 * Gets current square clicked on, sets it as selected square or clicked square. If clicked checks if valid move and does the move.
 			 */
 			public void mouseReleased(MouseEvent e) {
+				
+				Board b = controller.getBoard();
+				if(b.isCheckmate() || b.isStalemate()) return;
+				
 				int row = Math.abs(e.getY() / Square.size - 7);
 				int col = e.getX() / Square.size;
 				

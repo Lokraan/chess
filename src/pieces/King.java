@@ -13,11 +13,18 @@ public class King extends Piece {
 	}
 
 	@Override
+	/**
+	 * Gets possible moves
+	 */
 	public void possibleMoves() {
 		moves.clear();
 		dab();
 	}
 	
+	/**
+	 * Gets castling moves
+	 * @return arraylist of moves for castling
+	 */
 	public ArrayList<Move> getCastlingMoves() {
 		castleKingSide();
 		castleQueenSide();
@@ -60,7 +67,7 @@ public class King extends Piece {
 		Position p;
 		if(hasMoved) return;
 		// starting at start king pos to right end, if any aren't clear get out of there
-		for(int j = 4; j < 7; ++j) {
+		for(int j = 5; j < 7; ++j) {
 			p = new Position(pos.getRow(), j);
 			if(!board.isClear(p) || board.isUnderFire(color, p)) return;
 		}
@@ -69,11 +76,12 @@ public class King extends Piece {
 		
 		// check to make sure piece at row 7 is a rook that hasn't moved
 		Piece piece = board.getPiece(p);
+		System.out.println("piece: " + p);
 		if(piece == null || !(piece instanceof Rook) || ((Rook) piece).hasMoved) return;
 		
 		// if hasn't moved, add castling move yeet
 		Position rookStart = p;
-		Position rookEnd = new Position(pos.getRow(), 4);
+		Position rookEnd = new Position(pos.getRow(), 5);
 		Position kingEnd = new Position(pos.getRow(), pos.getCol() + 2);
 		moves.add( new Move(pos, kingEnd, rookStart, rookEnd) );
 	}
@@ -82,7 +90,6 @@ public class King extends Piece {
 	 * Get castling moves for queen side
 	 */
 	private void castleQueenSide() {
-		
 		Position p;
 		if(hasMoved) return;
 		// starting at start king pos to right end, if any aren't clear get out of there
@@ -108,6 +115,7 @@ public class King extends Piece {
 	@Override
 	/**
 	 * Gets char rep of piece
+	 * @return Char rep of piece
 	 */
 	public char toChar() {
 		switch(this.color) {

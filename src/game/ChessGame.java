@@ -50,6 +50,19 @@ public class ChessGame {
 		return this.board;
 	}
 	
+	/**
+	 * Flip flops colors like my tree
+	 * @param color
+	 * @return inverse color
+	 */
+	public Colors flipFlopColor(Colors color) {
+		switch(color) {
+			case Black: return Colors.White;
+			default: return Colors.Black;
+		}
+	}
+
+	
 	/** 
 	 * Converts string input into Move class
 	 * @param move
@@ -88,13 +101,6 @@ public class ChessGame {
 			case 'h': return 7;
 		}
 		return -1;
-	}
-	
-	public Colors flipFlopColor(Colors color) {
-		switch(color) {
-			case Black: return Colors.White;
-			default: return Colors.Black;
-		}
 	}
 	
 }

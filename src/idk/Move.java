@@ -42,7 +42,6 @@ public class Move {
 	
 	/**
 	 * enpassant
-	 * @return
 	 */
 	public Move(Position start, Position end, Piece movingPiece, Piece deadPiece) {
 		this(start, end, movingPiece);

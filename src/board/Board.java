@@ -2,18 +2,21 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import enums.Colors;
 import idk.*;
 import pieces.*;
-
 public class Board {
 
 	private Piece[][] pieces;
 	private Piece wKing;
 	private Piece bKing;
+	private Stack<Move> moveHistory;
 	
-	public Board() {}
+	public Board() {
+		moveHistory = new Stack<Move>();
+	}
 	
 	/**
 	 * Unconditionally updates board. 
@@ -96,6 +99,8 @@ public class Board {
 			}
 		}
 		
+		moveHistory.add(move);
+		
 	}
 	
 	/**
@@ -131,16 +136,38 @@ public class Board {
 	 * @return yes/no
 	 */
 	public boolean canAnyoneMove(Colors color) {
-		ArrayList<Piece> pieceList;
-		switch(color) {
-			case Black: pieceList = getPieceList(Colors.Black);
-			default: pieceList = getPieceList(Colors.White);
+		return getLegalMoves(color).size() != 0;
+	}
+	
+	/**
+	 * Checks if game is a stalemate
+	 * @return true if stalemate, false if not
+	 */
+	public boolean isStalemate() {
+		for (Colors color : Colors.values()) {
+			if(!inCheck(color) && !canAnyoneMove(color)) {
+				return true;
+			}
 		}
 		
-		for(Piece p : pieceList) {
-			if(getLegalMoves(p) != null) return true;
+		return false;
+	}
+	
+	/**
+	 * Checks if game is checkmate
+	 * @return true if checkmate, false if not
+	 */
+	public boolean isCheckmate() {
+		for(Colors color : Colors.values()) {
+			if(inCheck(color) && !canAnyoneMove(color)) {
+				return true;
+			}
 		}
-		
+		return false;
+	}
+	
+	public boolean isCheckmate(Colors color) {
+		if(inCheck(color) && !canAnyoneMove(color)) return true;
 		return false;
 	}
 	
@@ -148,7 +175,7 @@ public class Board {
 	 * Checks if move will put player into check, true if so, false if not.
 	 * @param color
 	 * @param move
-	 * @return
+	 * @return true if puts in check, false if not
 	 */
 	private boolean putsPlayerInCheck(Colors color, Move move) { 
 		Board newBoard = BoardBuilder.cloneBoard(this);
@@ -157,6 +184,24 @@ public class Board {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Gets list of pieces
+	 * @return list of pieces
+	 */
+	private ArrayList<Piece> getPieceList() {
+		ArrayList<Piece> pieceList = new ArrayList<Piece>();
+		for(int x = 0; x < pieces.length; x++) {
+			for(int y = 0; y < pieces.length; y++) {
+				Position p = new Position(x, y);
+				Piece piece = getPiece(p);
+				if(piece != null) {
+					pieceList.add(piece);
+				}
+			}
+		}
+		return pieceList;
 	}
 	
 	/**
@@ -320,18 +365,37 @@ public class Board {
 	}
 	
 	/**
+	 * Get every single legal move possible
+	 * @return
+	 */
+	public ArrayList<Move> getLegalMoves() {
+		ArrayList<Move> legalMoves = new ArrayList<Move>();
+		for(Piece p : getPieceList()) {
+			legalMoves.addAll(getLegalMoves(p));
+		}
+		
+		return legalMoves;
+	}
+	
+	public ArrayList<Move> getLegalMoves(Colors color) {
+		ArrayList<Move> legalMoves = new ArrayList<Move>();
+		for(Piece p : getPieceList(color)) {
+			legalMoves.addAll(getLegalMoves(p));
+		}
+		return legalMoves;
+	}
+	
+	/**
 	 * Gets legal moves for piece :)
 	 * @param piece
-	 * @return
+	 * @return array list of legal moves
 	 */
 	public ArrayList<Move> getLegalMoves(Piece piece) {
 		ArrayList<Move> moves = new ArrayList<Move>();
 		if(piece == null) return moves;
 		ArrayList<Move> possibleMoves = piece.getPossibleMoves();
 		if(piece instanceof King) {
-			System.out.println("king moves: " + possibleMoves);
 			ArrayList<Move> castleMoves = ((King) piece).getCastlingMoves();
-			System.out.println("king moves2: " + possibleMoves);
 			possibleMoves.addAll(castleMoves);
 		}
 		for(Move m : possibleMoves) {
