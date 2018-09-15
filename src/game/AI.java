@@ -26,7 +26,7 @@ public class AI {
 		else if(p instanceof Queen) return 9.0;
 		else if(p instanceof Rook) return 5.0;
 		else if(p instanceof Bishop) return 3.5;
-		else if(p instanceof Rook) return 3.0;
+		else if(p instanceof Knight) return 3.0;
 		else if(p instanceof Pawn) return 1.5;
 		return 0.0;
 	}
